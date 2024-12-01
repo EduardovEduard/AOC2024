@@ -37,7 +37,7 @@ This template supports all major OS (macOS, Linux, Windows).
 
 ```sh
 # example: `cargo scaffold 1`
-cargo scaffold <day>
+`cargo scaffold <day>`
 
 # output:
 # Created module file "src/bin/01.rs"
