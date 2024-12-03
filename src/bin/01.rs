@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::str::FromStr;
 use itertools::Itertools;
 
 advent_of_code::solution!(1);
@@ -15,7 +14,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let (mut first, mut second) = parse_input(input);
+    let (first, second) = parse_input(input);
 
     let mut counter: HashMap<u32, u32> = HashMap::new();
     second.iter().for_each(|&x| {

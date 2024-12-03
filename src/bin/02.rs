@@ -51,6 +51,7 @@ pub fn part_two(input: &str) -> Option<u32> {
                 let new_report = Report {
                     levels: new_levels
                 };
+
                 if new_report.is_safe() {
                     count += 1;
                     break
