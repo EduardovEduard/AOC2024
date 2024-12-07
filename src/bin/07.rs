@@ -25,7 +25,6 @@ fn permute(ops: &mut Vec<Op>, n: usize, input: &Vec<u64>, result: u64, with_conc
     });
 
     if actual == result {
-        println!("{:?} = {}", ops, result);
         return Some(result);
     }
 
@@ -51,7 +50,6 @@ fn permute(ops: &mut Vec<Op>, n: usize, input: &Vec<u64>, result: u64, with_conc
 
 pub fn part_one(input: &str) -> Option<u64> {
     let input = parse_input(input);
-    println!("{:?}", input);
     let res = input.iter().filter(|(ans, rest)| {
         let mut ops = vec![Op::ADD; rest.len() - 1];
         permute(&mut ops, 0, rest, *ans, false).is_some()
@@ -61,7 +59,6 @@ pub fn part_one(input: &str) -> Option<u64> {
 
 pub fn part_two(input: &str) -> Option<u64> {
     let input = parse_input(input);
-    println!("{:?}", input);
     let res = input.iter().filter(|(ans, rest)| {
         let mut ops = vec![Op::ADD; rest.len() - 1];
         permute(&mut ops, 0, rest, *ans, true).is_some()
