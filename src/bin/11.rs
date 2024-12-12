@@ -12,16 +12,14 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 fn blink(stones: Vec<u128>) -> Vec<u128> {
     let mut new_stones = vec![];
-    stones.iter().for_each(|stone| {
-       match stone {
-           0 => new_stones.push(1),
-           stone if even(stone) => {
-               let base = 10_u128.pow((stone.ilog10() + 1) / 2);
-               new_stones.push(stone / base);
-               new_stones.push(stone % base)
-           },
-           _ => new_stones.push(stone * 2024)
-       }
+    stones.iter().for_each(|stone| match stone {
+        0 => new_stones.push(1),
+        stone if even(stone) => {
+            let base = 10_u128.pow((stone.ilog10() + 1) / 2);
+            new_stones.push(stone / base);
+            new_stones.push(stone % base)
+        }
+        _ => new_stones.push(stone * 2024),
     });
     new_stones
 }
@@ -33,9 +31,12 @@ fn even(v: &u128) -> bool {
 pub fn part_two(input: &str) -> Option<u128> {
     let mut stones = parse_input(input);
     let mut cache = HashMap::new();
-    Some(stones.iter()
-        .map(|&x| fast_blink(&mut cache, x, 75) as u128)
-        .sum::<u128>())
+    Some(
+        stones
+            .iter()
+            .map(|&x| fast_blink(&mut cache, x, 75) as u128)
+            .sum::<u128>(),
+    )
 }
 
 fn fast_blink(cache: &mut HashMap<(u128, u32), u64>, stone: u128, blinks: u32) -> u64 {
@@ -55,7 +56,7 @@ fn fast_blink(cache: &mut HashMap<(u128, u32), u64>, stone: u128, blinks: u32) -
             let right = fast_blink(cache, stone % base, blinks - 1);
             left + right
         }
-        _ => fast_blink(cache, stone * 2024, blinks - 1)
+        _ => fast_blink(cache, stone * 2024, blinks - 1),
     };
 
     cache.insert((stone, blinks), result);

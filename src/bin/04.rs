@@ -30,14 +30,38 @@ impl Point {
 
     fn move_to(&self, dir: &Direction) -> Self {
         match dir {
-            Direction::N => Point { x: self.x, y: self.y - 1 },
-            Direction::NE => Point { x: self.x + 1, y: self.y - 1 },
-            Direction::E => Point { x: self.x + 1, y: self.y },
-            Direction::SE => Point { x: self.x + 1, y: self.y + 1 },
-            Direction::S => Point { x: self.x, y: self.y + 1 },
-            Direction::SW => Point { x: self.x - 1, y: self.y + 1 },
-            Direction::W => Point { x: self.x - 1, y: self.y },
-            Direction::NW => Point { x: self.x - 1, y: self.y - 1 },
+            Direction::N => Point {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Direction::NE => Point {
+                x: self.x + 1,
+                y: self.y - 1,
+            },
+            Direction::E => Point {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Direction::SE => Point {
+                x: self.x + 1,
+                y: self.y + 1,
+            },
+            Direction::S => Point {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Direction::SW => Point {
+                x: self.x - 1,
+                y: self.y + 1,
+            },
+            Direction::W => Point {
+                x: self.x - 1,
+                y: self.y,
+            },
+            Direction::NW => Point {
+                x: self.x - 1,
+                y: self.y - 1,
+            },
         }
     }
 }
@@ -84,7 +108,7 @@ impl Char {
             Char::M => Some(Char::A),
             Char::A => Some(Char::S),
             Char::S => None,
-            Char::Other(c) => None
+            Char::Other(c) => None,
         }
     }
 }
@@ -102,10 +126,16 @@ impl Board {
     }
 
     fn get(&self, point: &Point) -> Option<Char> {
-        if point.x < 0 || point.y < 0 || point.x >= self.width as i32 || point.y >= self.height as i32 {
+        if point.x < 0
+            || point.y < 0
+            || point.x >= self.width as i32
+            || point.y >= self.height as i32
+        {
             return None;
         }
-        Some(Char::from_char(self.board[point.y as usize][point.x as usize]))
+        Some(Char::from_char(
+            self.board[point.y as usize][point.x as usize],
+        ))
     }
 
     fn neighbours_of(&self, point: &Point, char: &Char) -> Vec<Point> {
@@ -153,9 +183,10 @@ impl Board {
         let dirs = vec![Direction::NW, Direction::NE, Direction::SE, Direction::SW];
         let mut candidates = vec![Char::M, Char::M, Char::S, Char::S];
         for _ in 0..4 {
-            let matched = dirs.iter().zip(&candidates).all(|(dir, &expected)| {
-                self.get(&point.move_to(dir)) == Some(expected)
-            });
+            let matched = dirs
+                .iter()
+                .zip(&candidates)
+                .all(|(dir, &expected)| self.get(&point.move_to(dir)) == Some(expected));
 
             if matched {
                 return true;

@@ -48,13 +48,11 @@ pub fn part_two(input: &str) -> Option<u32> {
         } else {
             for i in 0..report.levels.len() {
                 let new_levels = [&report.levels[0..i], &report.levels[i + 1..]].concat();
-                let new_report = Report {
-                    levels: new_levels
-                };
+                let new_report = Report { levels: new_levels };
 
                 if new_report.is_safe() {
                     count += 1;
-                    break
+                    break;
                 }
             }
         }
@@ -64,12 +62,14 @@ pub fn part_two(input: &str) -> Option<u32> {
 }
 
 fn parse_input(input: &str) -> Vec<Report> {
-    input.lines()
+    input
+        .lines()
         .map(|line| Report {
-            levels: line.split_ascii_whitespace()
+            levels: line
+                .split_ascii_whitespace()
                 .map(|x| x.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>()
-            })
+                .collect::<Vec<i32>>(),
+        })
         .collect()
 }
 

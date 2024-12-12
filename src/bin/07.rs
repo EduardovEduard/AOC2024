@@ -1,11 +1,10 @@
 advent_of_code::solution!(7);
 
-
 #[derive(Debug, Clone, Copy)]
 enum Op {
     ADD,
     MUL,
-    CONCAT
+    CONCAT,
 }
 
 impl Op {
@@ -13,16 +12,23 @@ impl Op {
         match self {
             Op::ADD => a + b,
             Op::MUL => a * b,
-            Op::CONCAT => a * 10_u64.pow(b.ilog10() + 1) + b
+            Op::CONCAT => a * 10_u64.pow(b.ilog10() + 1) + b,
         }
     }
 }
 
-fn permute(ops: &mut Vec<Op>, n: usize, input: &Vec<u64>, result: u64, with_concat: bool) -> Option<u64> {
+fn permute(
+    ops: &mut Vec<Op>,
+    n: usize,
+    input: &Vec<u64>,
+    result: u64,
+    with_concat: bool,
+) -> Option<u64> {
     let current = input[0];
-    let actual = input[1..].iter().zip(ops.iter()).fold(current, |acc, (x, op)| {
-        op.apply(acc, *x)
-    });
+    let actual = input[1..]
+        .iter()
+        .zip(ops.iter())
+        .fold(current, |acc, (x, op)| op.apply(acc, *x));
 
     if actual == result {
         return Some(result);
@@ -50,30 +56,43 @@ fn permute(ops: &mut Vec<Op>, n: usize, input: &Vec<u64>, result: u64, with_conc
 
 pub fn part_one(input: &str) -> Option<u64> {
     let input = parse_input(input);
-    let res = input.iter().filter(|(ans, rest)| {
-        let mut ops = vec![Op::ADD; rest.len() - 1];
-        permute(&mut ops, 0, rest, *ans, false).is_some()
-    }).map(|(ans, _)| ans).sum();
+    let res = input
+        .iter()
+        .filter(|(ans, rest)| {
+            let mut ops = vec![Op::ADD; rest.len() - 1];
+            permute(&mut ops, 0, rest, *ans, false).is_some()
+        })
+        .map(|(ans, _)| ans)
+        .sum();
     Some(res)
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
     let input = parse_input(input);
-    let res = input.iter().filter(|(ans, rest)| {
-        let mut ops = vec![Op::ADD; rest.len() - 1];
-        permute(&mut ops, 0, rest, *ans, true).is_some()
-    }).map(|(ans, _)| ans).sum();
+    let res = input
+        .iter()
+        .filter(|(ans, rest)| {
+            let mut ops = vec![Op::ADD; rest.len() - 1];
+            permute(&mut ops, 0, rest, *ans, true).is_some()
+        })
+        .map(|(ans, _)| ans)
+        .sum();
     Some(res)
 }
 
 fn parse_input(input: &str) -> Vec<(u64, Vec<u64>)> {
-    input.lines().map(|line| {
-        let (ans, rest) = line.split_once(":").unwrap();
-        let rest: Vec<u64> = rest.trim().split(" ")
-            .map(|x| x.trim().parse().unwrap())
-            .collect();
-        (ans.parse().unwrap(), rest)
-    }).collect()
+    input
+        .lines()
+        .map(|line| {
+            let (ans, rest) = line.split_once(":").unwrap();
+            let rest: Vec<u64> = rest
+                .trim()
+                .split(" ")
+                .map(|x| x.trim().parse().unwrap())
+                .collect();
+            (ans.parse().unwrap(), rest)
+        })
+        .collect()
 }
 
 #[cfg(test)]

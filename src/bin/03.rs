@@ -18,13 +18,13 @@ struct Parser {
     chars: Vec<char>,
     i: Option<usize>,
     remaining: usize,
-    do_state: Option<Do>
+    do_state: Option<Do>,
 }
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 enum Do {
-    DO,
-    DONT
+    Do,
+    Dont,
 }
 
 impl Parser {
@@ -33,7 +33,7 @@ impl Parser {
             chars: input.chars().collect(),
             i: Some(0),
             remaining: input.chars().count(),
-            do_state: None
+            do_state: None,
         }
     }
 
@@ -45,17 +45,11 @@ impl Parser {
             Some('d') => {
                 self.do_state = self.parse_do();
                 self.parse_next_mul()
-            },
-            Some('m') => {
-                match self.parse_mul() {
-                    Some((a, b)) if self.do_state != Some(Do::DONT) => {
-                        Some((a, b))
-                    },
-                    Some(_) if self.do_state == Some(Do::DONT) => {
-                        self.parse_next_mul()
-                    }
-                    _ => self.parse_next_mul()
-                }
+            }
+            Some('m') => match self.parse_mul() {
+                Some((a, b)) if self.do_state != Some(Do::Dont) => Some((a, b)),
+                Some(_) if self.do_state == Some(Do::Dont) => self.parse_next_mul(),
+                _ => self.parse_next_mul(),
             },
             _ => {
                 self.advance();
@@ -67,10 +61,10 @@ impl Parser {
     fn parse_do(&mut self) -> Option<Do> {
         if self.peek("don't()") {
             self.advance_by(7)?;
-            Some(Do::DONT)
+            Some(Do::Dont)
         } else if self.peek("do()") {
             self.advance_by(4)?;
-            Some(Do::DO)
+            Some(Do::Do)
         } else {
             self.advance();
             self.do_state
@@ -80,7 +74,7 @@ impl Parser {
     fn parse_mul(&mut self) -> Option<(u32, u32)> {
         if self.peek("mul(") {
             self.advance_by(4)?;
-            let a= self.parse_number()?;
+            let a = self.parse_number()?;
             self.expect_char(',');
             let b = self.parse_number()?;
             self.expect_char(')')?;
@@ -99,26 +93,27 @@ impl Parser {
             c = self.advance();
         }
         if number > 999 {
-            return None
+            return None;
         }
         Some(number)
     }
 
     fn peek(&self, text: &str) -> bool {
         if let Some(i) = self.i {
-            self.remaining >= text.len() && self.chars[i..i + text.len()] == text.chars().collect::<Vec<char>>()
+            self.remaining >= text.len()
+                && self.chars[i..i + text.len()] == text.chars().collect::<Vec<char>>()
         } else {
             false
         }
     }
 
     fn expect_char(&mut self, char: char) -> Option<char> {
-        let c = self.current();
-        if c.is_some() && c.unwrap() == char {
-            self.advance();
-            Some(c.unwrap())
-        } else {
-            None
+        match self.current() {
+            Some(ch) if ch == char => {
+                self.advance();
+                Some(ch)
+            }
+            _ => None,
         }
     }
 
@@ -129,7 +124,7 @@ impl Parser {
     fn advance(&mut self) -> Option<char> {
         let i = self.i?;
         if i == self.chars.len() {
-            return None
+            return None;
         }
         self.i = Some(i + 1);
         self.remaining -= 1;

@@ -48,7 +48,11 @@ impl Board {
     }
 
     fn get(&self, point: &Point) -> Option<char> {
-        if point.x < 0 || point.y < 0 || point.x >= self.width as i32 || point.y >= self.height as i32 {
+        if point.x < 0
+            || point.y < 0
+            || point.x >= self.width as i32
+            || point.y >= self.height as i32
+        {
             return None;
         }
         Some(self.board[point.y as usize][point.x as usize])
@@ -78,7 +82,6 @@ impl Board {
     }
 }
 
-
 impl Point {
     fn new(x: i32, y: i32) -> Self {
         Self { x, y }
@@ -86,10 +89,22 @@ impl Point {
 
     fn move_to(&self, dir: &Direction) -> Self {
         match dir {
-            Direction::N => Point { x: self.x, y: self.y - 1 },
-            Direction::E => Point { x: self.x + 1, y: self.y },
-            Direction::S => Point { x: self.x, y: self.y + 1 },
-            Direction::W => Point { x: self.x - 1, y: self.y },
+            Direction::N => Point {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Direction::E => Point {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Direction::S => Point {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Direction::W => Point {
+                x: self.x - 1,
+                y: self.y,
+            },
         }
     }
 
@@ -144,12 +159,17 @@ fn calc_area_perimeter(board: &Board, point: &Point, ch: char) -> (HashSet<Point
         }
     }
 
-    let perimeter = visited.iter().map(|p| {
-        let count= p.neighbours().iter().filter(|&neighbour| {
-            board.get(neighbour) != Some(ch)
-        }).count() as u32;
-        count
-    }).sum();
+    let perimeter = visited
+        .iter()
+        .map(|p| {
+            let count = p
+                .neighbours()
+                .iter()
+                .filter(|&neighbour| board.get(neighbour) != Some(ch))
+                .count() as u32;
+            count
+        })
+        .sum();
 
     (visited, area, perimeter)
 }
@@ -198,39 +218,47 @@ fn calc_area_sides(board: &Board, point: &Point, ch: char) -> (HashSet<Point>, u
     visited.iter().for_each(|&p| {
         let neighbours = p.neighbours();
         point_by_sides.insert(p, HashSet::new());
-        neighbours.iter().zip(Direction::iter()).for_each(|(neighbour, dir)| {
-            if board.get(neighbour) != Some(ch) {
-                point_by_sides.get_mut(&p).unwrap().insert(dir);
-            }
-        });
+        neighbours
+            .iter()
+            .zip(Direction::iter())
+            .for_each(|(neighbour, dir)| {
+                if board.get(neighbour) != Some(ch) {
+                    point_by_sides.get_mut(&p).unwrap().insert(dir);
+                }
+            });
     });
 
     let empty = HashSet::<Direction>::new();
     Direction::iter().for_each(|dir| {
         let mut visited_current_direction = HashSet::new();
         visited.iter().for_each(|&p| {
-           if let Some(directions) = point_by_sides.get(&p) {
-               if visited_current_direction.contains(&p) {
-                   return;
-               }
-               if !directions.contains(&dir) {
-                   return;
-               }
-               visited_current_direction.insert(p);
+            if let Some(directions) = point_by_sides.get(&p) {
+                if visited_current_direction.contains(&p) {
+                    return;
+                }
+                if !directions.contains(&dir) {
+                    return;
+                }
+                visited_current_direction.insert(p);
 
-               let steps = choose_steps(&dir);
-               steps.iter().for_each(|step_direction| {
-                   let mut current = p.clone();
-                   while let Some(left_ch) = board.get(&current.move_to(&step_direction)) {
-                       current = current.move_to(&step_direction);
-                       if ch != left_ch || !point_by_sides.get(&current).unwrap_or(&empty).contains(&dir) {
-                           break;
-                       }
-                       visited_current_direction.insert(current);
-                       point_by_sides.get_mut(&current).unwrap().remove(&dir);
-                   }
-               });
-           }
+                let steps = choose_steps(&dir);
+                steps.iter().for_each(|step_direction| {
+                    let mut current = p.clone();
+                    while let Some(left_ch) = board.get(&current.move_to(&step_direction)) {
+                        current = current.move_to(&step_direction);
+                        if ch != left_ch
+                            || !point_by_sides
+                                .get(&current)
+                                .unwrap_or(&empty)
+                                .contains(&dir)
+                        {
+                            break;
+                        }
+                        visited_current_direction.insert(current);
+                        point_by_sides.get_mut(&current).unwrap().remove(&dir);
+                    }
+                });
+            }
         });
     });
     let sides = point_by_sides.iter().map(|(_, set)| set.len() as u32).sum();

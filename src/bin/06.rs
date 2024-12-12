@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use itertools::Itertools;
+use std::collections::HashSet;
 
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
@@ -49,8 +49,11 @@ struct MovingPoint {
 
 impl MovingPoint {
     fn move_once(&self) -> MovingPoint {
-        let new_point = Point { x: self.x, y: self.y }
-            .move_to(&self.direction);
+        let new_point = Point {
+            x: self.x,
+            y: self.y,
+        }
+        .move_to(&self.direction);
         MovingPoint {
             x: new_point.x,
             y: new_point.y,
@@ -59,8 +62,11 @@ impl MovingPoint {
     }
 
     fn move_back(&self) -> MovingPoint {
-        let new_point = Point { x: self.x, y: self.y }
-            .move_to(&self.direction.opposite());
+        let new_point = Point {
+            x: self.x,
+            y: self.y,
+        }
+        .move_to(&self.direction.opposite());
         MovingPoint {
             x: new_point.x,
             y: new_point.y,
@@ -79,7 +85,10 @@ impl MovingPoint {
 
 impl From<MovingPoint> for Point {
     fn from(value: MovingPoint) -> Self {
-        Self { x: value.x, y: value.y }
+        Self {
+            x: value.x,
+            y: value.y,
+        }
     }
 }
 
@@ -90,10 +99,22 @@ impl Point {
 
     fn move_to(&self, dir: &Direction) -> Self {
         match dir {
-            Direction::N => Point { x: self.x, y: self.y - 1 },
-            Direction::E => Point { x: self.x + 1, y: self.y },
-            Direction::S => Point { x: self.x, y: self.y + 1 },
-            Direction::W => Point { x: self.x - 1, y: self.y },
+            Direction::N => Point {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Direction::E => Point {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Direction::S => Point {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Direction::W => Point {
+                x: self.x - 1,
+                y: self.y,
+            },
         }
     }
 }
@@ -138,10 +159,16 @@ impl Board {
     }
 
     fn get(&self, point: &Point) -> Option<Char> {
-        if point.x < 0 || point.y < 0 || point.x >= self.width as i32 || point.y >= self.height as i32 {
+        if point.x < 0
+            || point.y < 0
+            || point.x >= self.width as i32
+            || point.y >= self.height as i32
+        {
             return None;
         }
-        Some(Char::from_char(self.board[point.y as usize][point.x as usize]))
+        Some(Char::from_char(
+            self.board[point.y as usize][point.x as usize],
+        ))
     }
 
     fn set(&mut self, point: &Point, char: char) {
@@ -185,10 +212,10 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 fn looking_away(board: &Board, point: &MovingPoint) -> bool {
-    point.x == 0 && point.direction == Direction::W ||
-        point.x == board.width as i32 - 1 && point.direction == Direction::E ||
-        point.y == 0 && point.direction == Direction::N ||
-        point.y == board.height as i32 - 1 && point.direction == Direction::S
+    point.x == 0 && point.direction == Direction::W
+        || point.x == board.width as i32 - 1 && point.direction == Direction::E
+        || point.y == 0 && point.direction == Direction::N
+        || point.y == board.height as i32 - 1 && point.direction == Direction::S
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -210,9 +237,12 @@ pub fn part_two(input: &str) -> Option<u32> {
 
     positions.remove(&guard_start.into());
 
-    Some(positions.iter().filter(|point|
-        can_place_obstacle(&board, guard_start, &point)
-    ).count() as u32)
+    Some(
+        positions
+            .iter()
+            .filter(|point| can_place_obstacle(&board, guard_start, &point))
+            .count() as u32,
+    )
 }
 
 fn can_place_obstacle(board: &Board, mut guard: MovingPoint, position: &Point) -> bool {
@@ -223,7 +253,9 @@ fn can_place_obstacle(board: &Board, mut guard: MovingPoint, position: &Point) -
         }
         loop_visited.insert(guard);
         let step = guard.move_once();
-        if board.get(&step.into()) == Some(Char::HASH) || (step.x == position.x && step.y == position.y) {
+        if board.get(&step.into()) == Some(Char::HASH)
+            || (step.x == position.x && step.y == position.y)
+        {
             guard = guard.turn_right();
         } else {
             guard = step;

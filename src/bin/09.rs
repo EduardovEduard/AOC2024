@@ -22,11 +22,9 @@ pub fn part_one(input: &str) -> Option<u64> {
 }
 
 fn checksum(disk: &Vec<Option<u64>>) -> u64 {
-    disk.iter()
-        .enumerate()
-        .fold(0, |acc, (i, &x)|
-            x.map(|x| i as u64 * x + acc).unwrap_or(acc)
-        )
+    disk.iter().enumerate().fold(0, |acc, (i, &x)| {
+        x.map(|x| i as u64 * x + acc).unwrap_or(acc)
+    })
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
@@ -36,12 +34,13 @@ pub fn part_two(input: &str) -> Option<u64> {
 
     let mut i = 0;
     let mut j = 1;
-    let mut file = disk[i] != None;
+    let mut file = disk[i].is_some();
     let mut next_id = 0;
     while i < disk.len() {
         while j < disk.len()
-            && ((file && disk[j] != None && disk[j].unwrap() == next_id)
-            || (!file && disk[j] == None)) {
+            && ((file && disk[j].is_some() && disk[j].unwrap() == next_id)
+                || (!file && disk[j].is_none()))
+        {
             j += 1
         }
         if file {
@@ -49,7 +48,7 @@ pub fn part_two(input: &str) -> Option<u64> {
         } else {
             blocks_set.insert((i, j));
         }
-        if j < disk.len() && disk[j] != None {
+        if j < disk.len() && disk[j].is_some() {
             next_id += 1;
             file = true;
         } else {
@@ -71,7 +70,7 @@ pub fn part_two(input: &str) -> Option<u64> {
                 break;
             }
             if block_size < file_size {
-                continue
+                continue;
             }
             drop(iter);
 
@@ -79,7 +78,8 @@ pub fn part_two(input: &str) -> Option<u64> {
             if block_size > file_size {
                 blocks_set.insert((block_i + file_size, block_j));
             }
-            disk[block_i..block_i + file_size].copy_from_slice(vec![Some(file_id as u64); file_size].as_slice());
+            disk[block_i..block_i + file_size]
+                .copy_from_slice(vec![Some(file_id as u64); file_size].as_slice());
             disk[file_i..file_j].copy_from_slice(vec![None; file_size].as_slice());
             break;
         }

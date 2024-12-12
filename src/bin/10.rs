@@ -21,10 +21,22 @@ enum Direction {
 impl Point {
     fn move_to(&self, dir: &Direction) -> Self {
         match dir {
-            Direction::N => Point { x: self.x, y: self.y - 1 },
-            Direction::E => Point { x: self.x + 1, y: self.y },
-            Direction::S => Point { x: self.x, y: self.y + 1 },
-            Direction::W => Point { x: self.x - 1, y: self.y },
+            Direction::N => Point {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Direction::E => Point {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Direction::S => Point {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Direction::W => Point {
+                x: self.x - 1,
+                y: self.y,
+            },
         }
     }
 }
@@ -37,9 +49,10 @@ struct Board {
 
 impl Board {
     fn new(input: &str) -> Self {
-        let board: Vec<Vec<u8>> = input.lines().map(|line| line.chars()
-            .map(|c| (c as u8) - b'0').collect()
-        ).collect();
+        let board: Vec<Vec<u8>> = input
+            .lines()
+            .map(|line| line.chars().map(|c| (c as u8) - b'0').collect())
+            .collect();
         let width = board[0].len();
         let height = board.len();
         Self {
@@ -50,7 +63,11 @@ impl Board {
     }
 
     fn get(&self, point: &Point) -> Option<u8> {
-        if point.x < 0 || point.y < 0 || point.x >= self.width as i32 || point.y >= self.height as i32 {
+        if point.x < 0
+            || point.y < 0
+            || point.x >= self.width as i32
+            || point.y >= self.height as i32
+        {
             return None;
         }
         Some(self.board[point.y as usize][point.x as usize])
@@ -68,21 +85,21 @@ impl Board {
     }
 }
 
-
 pub fn part_one(input: &str) -> Option<u32> {
     let board = Board::new(input);
     let mut candidates = vec![];
     for i in 0..board.height {
         for j in 0..board.width {
-            let point = Point { x: j as i32, y: i as i32 };
+            let point = Point {
+                x: j as i32,
+                y: i as i32,
+            };
             if let Some(0) = board.get(&point) {
                 candidates.push(point);
             }
         }
     }
-    let res = candidates.iter().fold(0, |acc, p| {
-        acc + score(&board, p)
-    });
+    let res = candidates.iter().fold(0, |acc, p| acc + score(&board, p));
     Some(res)
 }
 
@@ -99,19 +116,19 @@ fn score(board: &Board, start: &Point) -> u32 {
         let (p, v) = d.pop_front().unwrap();
         if v == target {
             score += 1;
-            continue
+            continue;
         }
 
         for neighbour in board.neighbours(&p) {
             if visited.contains(&neighbour) {
-                continue
+                continue;
             }
             match board.get(&neighbour) {
                 Some(height) if height == v + 1 => {
                     d.push_back((neighbour, v + 1));
                     visited.insert(neighbour);
                 }
-                _ => { continue }
+                _ => continue,
             }
         }
     }
@@ -123,15 +140,16 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut candidates = vec![];
     for i in 0..board.height {
         for j in 0..board.width {
-            let point = Point { x: j as i32, y: i as i32 };
+            let point = Point {
+                x: j as i32,
+                y: i as i32,
+            };
             if let Some(0) = board.get(&point) {
                 candidates.push(point);
             }
         }
     }
-    let res = candidates.iter().fold(0, |acc, p| {
-        acc + rating(&board, p)
-    });
+    let res = candidates.iter().fold(0, |acc, p| acc + rating(&board, p));
     Some(res)
 }
 
@@ -146,7 +164,7 @@ fn rating(board: &Board, start: &Point) -> u32 {
         let (p, v) = d.pop_front().unwrap();
         if v == target {
             score += 1;
-            continue
+            continue;
         }
 
         for neighbour in board.neighbours(&p) {
@@ -154,13 +172,12 @@ fn rating(board: &Board, start: &Point) -> u32 {
                 Some(height) if height == v + 1 => {
                     d.push_back((neighbour, v + 1));
                 }
-                _ => { continue }
+                _ => continue,
             }
         }
     }
     score
 }
-
 
 #[cfg(test)]
 mod tests {

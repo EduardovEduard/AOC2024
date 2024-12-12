@@ -27,7 +27,11 @@ impl Board {
     }
 
     fn get(&self, point: &Point) -> Option<char> {
-        if point.x < 0 || point.y < 0 || point.x >= self.width as i32 || point.y >= self.height as i32 {
+        if point.x < 0
+            || point.y < 0
+            || point.x >= self.width as i32
+            || point.y >= self.height as i32
+        {
             return None;
         }
         Some(self.board[point.y as usize][point.x as usize])
@@ -43,7 +47,6 @@ impl Board {
         }
     }
 }
-
 
 impl Point {
     fn new(x: i32, y: i32) -> Self {
@@ -62,7 +65,6 @@ impl Point {
     }
 }
 
-
 pub fn part_one(input: &str) -> Option<u32> {
     let mut board = Board::new(input);
     let mut antinodes = HashSet::<Point>::new();
@@ -72,7 +74,7 @@ pub fn part_one(input: &str) -> Option<u32> {
             let p = Point::new(j as i32, i as i32);
             let c = board.get(&p).unwrap();
             if c == '.' {
-                continue
+                continue;
             }
             node_groups.entry(c).or_insert_with(|| vec![]).push(p);
         }
@@ -111,7 +113,7 @@ pub fn part_two(input: &str) -> Option<u32> {
             let p = Point::new(j as i32, i as i32);
             let c = board.get(&p).unwrap();
             if c == '.' {
-                continue
+                continue;
             }
             node_groups.entry(c).or_insert_with(|| vec![]).push(p);
         }
@@ -142,7 +144,6 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
 
     Some(antinodes.len() as u32)
-
 }
 
 #[cfg(test)]

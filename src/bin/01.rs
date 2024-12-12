@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use itertools::Itertools;
+use std::collections::HashMap;
 
 advent_of_code::solution!(1);
 
@@ -9,7 +9,10 @@ pub fn part_one(input: &str) -> Option<u32> {
     first.sort();
     second.sort();
 
-    let diff = first.iter().zip(second).fold(0i64, |acc, (a, b)| acc + ((*a as i64) - b as i64).abs());
+    let diff = first
+        .iter()
+        .zip(second)
+        .fold(0i64, |acc, (a, b)| acc + ((*a as i64) - b as i64).abs());
     Some(diff as u32)
 }
 
@@ -21,9 +24,9 @@ pub fn part_two(input: &str) -> Option<u32> {
         *counter.entry(x).or_insert(0) += 1;
     });
 
-    let similarity = first.iter().fold(0u32, |acc, x| {
-        acc + x * counter.get(&x).unwrap_or(&0)
-    });
+    let similarity = first
+        .iter()
+        .fold(0u32, |acc, x| acc + x * counter.get(&x).unwrap_or(&0));
 
     Some(similarity)
 }
@@ -40,7 +43,6 @@ fn parse_input(input: &str) -> (Vec<u32>, Vec<u32>) {
     });
     (first, second)
 }
-
 
 #[cfg(test)]
 mod tests {
