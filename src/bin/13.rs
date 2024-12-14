@@ -6,7 +6,7 @@ advent_of_code::solution!(13);
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 struct Move {
     x: i64,
-    y: i64
+    y: i64,
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -30,7 +30,10 @@ fn solve(a: &Move, b: &Move, prize: &Move) -> Option<(i64, i64)> {
     let a_solved = (xp - (xb * b_solved)) / xa;
 
     if xp == a_solved * xa + b_solved * xb && yp == a_solved * ya + b_solved * yb {
-        println!("Solution found for {:?} {:?} {:?}: A: {}, B: {}", a, b, prize, a_solved, b_solved);
+        println!(
+            "Solution found for {:?} {:?} {:?}: A: {}, B: {}",
+            a, b, prize, a_solved, b_solved
+        );
         Some((a_solved, b_solved))
     } else {
         println!("No solution found for {:?} {:?} {:?}", a, b, prize);
@@ -60,13 +63,28 @@ fn parse_input(input: &str) -> Vec<(Move, Move, Move)> {
     let mut chunks = input.lines().chunks(4);
     let mut machines = vec![];
     for mut chunk in chunks.into_iter() {
-        let (_, [_, ax, ay]) = button_reg.captures(chunk.next().unwrap()).unwrap().extract();
-        let (_, [_, bx, by]) = button_reg.captures(chunk.next().unwrap()).unwrap().extract();
+        let (_, [_, ax, ay]) = button_reg
+            .captures(chunk.next().unwrap())
+            .unwrap()
+            .extract();
+        let (_, [_, bx, by]) = button_reg
+            .captures(chunk.next().unwrap())
+            .unwrap()
+            .extract();
         let (_, [prize_x, prize_y]) = prize_reg.captures(chunk.next().unwrap()).unwrap().extract();
         machines.push((
-            Move { x: ax.parse().unwrap(), y: ay.parse().unwrap() },
-            Move { x: bx.parse().unwrap(), y: by.parse().unwrap() },
-            Move { x: prize_x.parse().unwrap(), y: prize_y.parse().unwrap() },
+            Move {
+                x: ax.parse().unwrap(),
+                y: ay.parse().unwrap(),
+            },
+            Move {
+                x: bx.parse().unwrap(),
+                y: by.parse().unwrap(),
+            },
+            Move {
+                x: prize_x.parse().unwrap(),
+                y: prize_y.parse().unwrap(),
+            },
         ));
     }
     machines
