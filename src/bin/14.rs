@@ -62,8 +62,8 @@ pub fn part_two(input: &str) -> Option<u32> {
 
     for i in 1..10000000 {
         for robot in &mut robots {
-            robot.0.x == ((robot.0.x + robot.1.x) % width + width) % width;
-            robot.0.y == ((robot.0.y + robot.1.y) % height + height) % height;
+            robot.0.x = ((robot.0.x + robot.1.x) % width + width) % width;
+            robot.0.y = ((robot.0.y + robot.1.y) % height + height) % height;
         }
 
         if find_vertical(&mut robots, 10) {
