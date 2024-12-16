@@ -53,17 +53,6 @@ impl Point {
     }
 }
 
-impl Mul<u32> for Point {
-    type Output = Self;
-
-    fn mul(self, rhs: u32) -> Self::Output {
-        Self {
-            x: self.x * rhs as i32,
-            y: self.y * rhs as i32,
-        }
-    }
-}
-
 #[derive(Debug, Hash, Eq, PartialEq, Copy, Clone)]
 enum Cell {
     Wall(Point),
