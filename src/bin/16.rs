@@ -315,7 +315,6 @@ pub fn part_one(input: &str) -> Option<u32> {
         if entry.cell.point == finish.point {
             continue;
         }
-        println!("{:?} {:?}", entry.cell.point, entry.score);
         let neighbours = board.neighbours_of(&entry.cell.point, &entry.direction);
         for (cell, dir, step_score) in neighbours {
             dq.push(Entry::new(cell, dir, entry.score + step_score));
@@ -387,7 +386,6 @@ pub fn part_two(input: &str) -> Option<u32> {
     let empty = vec![];
     for (key, value) in sources.iter() {
         let p = prevs.get(&(*key, *value)).or(Some(&empty)).unwrap();
-        println!("{:?}: {:?} --- {:?}", key, value, p);
     }
     while !sources.is_empty() {
         let cur = sources.pop_front().unwrap();
@@ -408,7 +406,6 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        // 104376 too high
         assert_eq!(result, Some(11048));
     }
 
