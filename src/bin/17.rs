@@ -113,9 +113,8 @@ fn dfs(a: u64, target_i: usize, target: &Vec<u8>, interpreter: &mut Interpreter,
 
 pub fn part_two(input: &str) -> Option<u64> {
     let mut interpreter= parse_input(input);
-    let result = interpreter.run();
-
     let mut target = interpreter.program.clone();
+
     target.reverse();
     let mut res = vec![];
     for a in 0x0..0x8 {
