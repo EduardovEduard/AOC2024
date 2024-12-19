@@ -5,13 +5,12 @@ advent_of_code::solution!(18);
 
 pub fn part_one(input: &str) -> Option<u32> {
     let coords = parse_input(input);
-    println!("{:?}", coords);
     let size = 71;
     let mut board = vec![vec!['.'; size]; size];
     for (x, y) in coords[0..1024].iter() {
         board[*y as usize][*x as usize] = '#';
     }
-    if let res@  Some(value) = bfs(&mut board) {
+    if let res@  Some(value) = bfs(&board) {
         return res;
     }
     None
@@ -19,24 +18,21 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 pub fn part_two(input: &str) -> Option<String> {
     let coords = parse_input(input);
-    println!("{:?}", coords);
     let size = 71;
     let mut board = vec![vec!['.'; size]; size];
     for (i, &(x, y)) in coords.iter().enumerate() {
         board[y as usize][x as usize] = '#';
 
-        if let Some(value) = bfs(&mut board) {
+        if let Some(value) = bfs(&board) {
             continue;
         }
 
         return Some(format!("{},{}", x, y));
     }
-
-    // not right 2905
     None
 }
 
-fn bfs(board: &mut Vec<Vec<char>>) -> Option<u32> {
+fn bfs(board: &Vec<Vec<char>>) -> Option<u32> {
     let start = (0, 0);
     let mut q = VecDeque::new();
     let size = board.len();
